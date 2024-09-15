@@ -52,7 +52,7 @@ resource "aws_iam_role" "github_actions" {
   })
 }
 
-data "aws_s3_bucket" "terraform_state_bucket" {
+data "aws_s3_bucket" "public_bucket" {
   bucket = "kabu-json-public-static-data-bucket"
 }
 
@@ -69,7 +69,7 @@ resource "aws_iam_policy" "github_actions" {
     Statement = [{
       Effect   = "Allow"
       Action   = "s3:PutObject"
-      Resource = "${data.aws_s3_bucket.terraform_state_bucket.arn}/*"
+      Resource = "${data.aws_s3_bucket.public_bucket.arn}/*"
       }, {
       Effect   = "Allow"
       Action   = "s3:PutObject"
