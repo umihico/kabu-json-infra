@@ -74,6 +74,14 @@ resource "aws_iam_policy" "github_actions" {
       Effect   = "Allow"
       Action   = "s3:PutObject"
       Resource = "${data.aws_s3_bucket.private_bucket.arn}/*"
+      }, {
+      Effect   = "Allow"
+      Action   = "s3:GetObject"
+      Resource = "${data.aws_s3_bucket.public_bucket.arn}/*"
+      }, {
+      Effect   = "Allow"
+      Action   = "s3:GetObject"
+      Resource = "${data.aws_s3_bucket.private_bucket.arn}/*"
     }]
   })
 }
