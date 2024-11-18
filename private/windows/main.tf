@@ -21,22 +21,18 @@ $exeInstallerPath = "C:\\Users\\Administrator\\Downloads\\chrome_installer.exe"
 (New-Object System.Net.WebClient).DownloadFile($exeInstaller, $exeInstallerPath)
 Start-Process -FilePath $exeInstallerPath -ArgumentList "/silent /install" -Wait
 
-# Install SSH Server (https://dev.classmethod.jp/articles/configure-windows-server-2019-sshd/)
-Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-Set-Service -Name sshd -StartupType Automatic
+# Install SSH Server (https://dev.classmethod.jp/articles/how-to-setup-windows-server-sshd-with-ec2launch-v2/)
 Start-Service sshd
-(Get-Content -Path "$env:programdata\ssh\sshd_config") | ForEach-Object {
-    $_ -replace '#PubkeyAuthentication yes', 'PubkeyAuthentication yes'
-} | Set-Content -Path "$env:programdata\ssh\sshd_config"
-(Get-Content -Path "$env:programdata\ssh\sshd_config") | ForEach-Object {
-    $_ -replace '#PasswordAuthentication yes', 'PasswordAuthentication no'
-} | Set-Content -Path "$env:programdata\ssh\sshd_config"
-$administratorsKeyPath =  Join-Path $env:ProgramData 'ssh\administrators_authorized_keys'
-Invoke-RestMethod -Uri http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key/ |
-    Out-File -FilePath $administratorsKeyPath -Encoding ascii
-icacls.exe "$Env:ProgramData\ssh\administrators_authorized_keys" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
-New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String -Force
-Restart-Service sshd
+Set-Service -Name sshd -StartupType 'Automatic'
+$administratorsKeyPath = Join-Path $env:ProgramData 'ssh\administrators_authorized_keys'
+$params = @{
+    Headers = @{
+        "X-aws-ec2-metadata-token" = Invoke-RestMethod 'http://169.254.169.254/latest/api/token' -Method Put -Headers @{ "X-aws-ec2-metadata-token-ttl-seconds" = 60 }
+    }
+    Uri     = 'http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key/'
+}
+Invoke-RestMethod @params | Out-File -FilePath $administratorsKeyPath -Encoding ascii
+Set-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -Enabled 'True' -Profile Any
 </powershell>
   EOF
   instance_names = ["0"]
