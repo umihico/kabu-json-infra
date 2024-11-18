@@ -82,7 +82,7 @@ data "aws_ami" "windows_2022" {
   owners      = ["amazon"]
   filter {
     name   = "name"
-    values = ["Windows_Server-2022-English-Full-Base*"]
+    values = ["Windows_Server-2025-Japanese-Full-Base*"] # 2022だと「内部エラーです」で起動しなかった
   }
 }
 
