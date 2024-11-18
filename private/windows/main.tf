@@ -86,17 +86,17 @@ data "aws_ami" "myami_windows_kabu_station" {
   owners = ["self"]
   filter {
     name   = "name"
-    values = ["myami-windows-kabu-station"]
+    values = ["kabu-json-windows"]
   }
 }
 
 resource "aws_instance" "this" {
   for_each = toset(local.instance_names)
   # ゼロから作るときはREADME.mdへ
-  ami       = data.aws_ami.windows_2022.id  # Golden Imageからではなく０から作り直したい時
-  user_data = base64encode(local.user_data) # Golden Imageからではなく０から作り直したい時
+  # ami       = data.aws_ami.windows_2022.id  # Golden Imageからではなく０から作り直したい時
+  # user_data = base64encode(local.user_data) # Golden Imageからではなく０から作り直したい時
   # ゴールデンイメージを使うとき
-  # ami                         = data.aws_ami.myami_windows_kabu_station.id
+  ami                         = data.aws_ami.myami_windows_kabu_station.id
   vpc_security_group_ids      = [aws_security_group.this.id]
   instance_type               = "t3a.large"
   iam_instance_profile        = aws_iam_instance_profile.this.name
