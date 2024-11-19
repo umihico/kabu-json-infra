@@ -35,9 +35,10 @@ Invoke-RestMethod @params | Out-File -FilePath $administratorsKeyPath -Encoding 
 Set-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -Enabled 'True' -Profile Any
 </powershell>
   EOF
-  instance_names = ["0"]
+  instance_names = var.instance_names != "" ? split(",", var.instance_names) : []
 }
 
+variable "instance_names" { type = string }
 variable "rdp_password" { type = string }          # TF_VAR_rdp_password
 variable "kabu_station_password" { type = string } # TF_VAR_kabu_station_password
 

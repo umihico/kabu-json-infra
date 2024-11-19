@@ -3,8 +3,8 @@
 ## 接続方法
 
 ```bash
-# インスタンス作成
-terraform -chdir=private apply
+# インスタンス作成（引数付与して作成）
+terraform -chdir=private apply -var=instance_names=0
 # RDP
 sh private/windows/rdp.sh
 # SSH
@@ -14,7 +14,8 @@ sh private/windows/ssh.sh
 ## destroy
 
 ```bash
-terraform -chdir=private destroy -target='module.windows.aws_instance.this'
+# 引数無しで削除
+terraform -chdir=private apply
 ```
 
 ## 初期設定、ゴールデンイメージの作成手順
