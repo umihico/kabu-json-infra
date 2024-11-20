@@ -39,8 +39,7 @@ Set-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -Enabled 'True' -Profile Any
 }
 
 variable "instance_names" { type = string }
-variable "rdp_password" { type = string }          # TF_VAR_rdp_password
-variable "kabu_station_password" { type = string } # TF_VAR_kabu_station_password
+variable "rdp_password" { type = string } # TF_VAR_rdp_password
 
 
 resource "aws_iam_role" "this" {

@@ -148,15 +148,13 @@ output "cloudfront_url" {
   value = aws_cloudfront_distribution.website_distribution.domain_name
 }
 
-variable "rdp_password" { type = string }          # TF_VAR_rdp_password
-variable "kabu_station_password" { type = string } # TF_VAR_kabu_station_password
+variable "rdp_password" { type = string } # TF_VAR_rdp_password
 variable "instance_names" {
   type    = string
   default = ""
 }
 module "windows" {
-  source                = "./windows"
-  rdp_password          = var.rdp_password
-  kabu_station_password = var.kabu_station_password
-  instance_names        = var.instance_names
+  source         = "./windows"
+  rdp_password   = var.rdp_password
+  instance_names = var.instance_names
 }
