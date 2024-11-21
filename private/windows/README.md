@@ -27,6 +27,7 @@ terraform -chdir=private apply
 - 右上歯車→右端のAPIタブ→APIを利用するにチェック→APIパスワードの本番用、検証用を設定→OK→指示通り一度アプリを閉じて再起動
 - C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startupへのショートカットをデスクトップに作成して、その中に
 kabuステーションのショートカットを入れておく
+- powershellから`wsl --install`
 
 ## ゴールデンイメージの作成
 

@@ -10,6 +10,9 @@ locals {
 # Reset RDP password
 net user Administrator "${var.rdp_password}";
 
+# Install Windows Subsystem for Linux
+wsl --install
+
 # Download Kabu Station Installer
 $exeInstaller = "http://download.r10.kabu.co.jp/kabustation/setup.exe"
 $exeInstallerPath = "C:\\Users\\Administrator\\Desktop\\kabustation.exe"
