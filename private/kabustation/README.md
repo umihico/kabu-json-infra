@@ -6,9 +6,9 @@
 # インスタンス作成（引数付与して作成）
 terraform -chdir=private apply -var=instance_names=0
 # RDP
-sh private/windows/rdp.sh
+sh private/kabustation/rdp.sh
 # SSH
-sh private/windows/ssh.sh
+sh private/kabustation/ssh.sh
 ```
 
 ## destroy
@@ -32,5 +32,5 @@ kabuステーションのショートカットを入れておく
 ## ゴールデンイメージの作成
 
 ```bash
-sh private/windows/create-golden-image.sh
+sh private/kabustation/create-golden-image.sh
 ```

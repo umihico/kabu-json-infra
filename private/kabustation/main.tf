@@ -111,7 +111,7 @@ resource "aws_instance" "this" {
 }
 
 resource "aws_key_pair" "this" {
-  key_name   = "kabu-json-windows"
+  key_name   = "kabu-json-kabustation"
   public_key = tls_private_key.key_pair.public_key_openssh
 }
 
@@ -122,13 +122,13 @@ resource "tls_private_key" "key_pair" {
 }
 
 resource "local_file" "ssh_key" {
-  filename = "windows/${aws_key_pair.this.key_name}.pem"
+  filename = "kabustation/${aws_key_pair.this.key_name}.pem"
   content  = tls_private_key.key_pair.private_key_pem
 }
 
 resource "local_file" "ip" {
   for_each = toset(local.instance_names)
-  filename = "windows/ip.json"
+  filename = "kabustation/ip.json"
   content  = aws_instance.this[each.key].public_ip
 }
 

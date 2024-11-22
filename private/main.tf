@@ -153,8 +153,8 @@ variable "instance_names" {
   type    = string
   default = ""
 }
-module "windows" {
-  source         = "./windows"
+module "kabustation" {
+  source         = "./kabustation"
   rdp_password   = var.rdp_password
   instance_names = var.instance_names
 }
