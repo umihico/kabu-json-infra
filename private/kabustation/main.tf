@@ -101,7 +101,7 @@ resource "aws_instance" "this" {
   # ゴールデンイメージを使うとき
   ami                         = data.aws_ami.myami_windows_kabu_station.id
   vpc_security_group_ids      = [aws_security_group.this.id]
-  instance_type               = "t3a.large"
+  instance_type               = "t3a.medium" # USD0.056/h 2vCPU 4GiB EBSのみ 最大5ギガビット
   iam_instance_profile        = aws_iam_instance_profile.this.name
   associate_public_ip_address = true
   key_name                    = aws_key_pair.this.key_name
