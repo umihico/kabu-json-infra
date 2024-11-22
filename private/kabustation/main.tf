@@ -76,7 +76,7 @@ resource "aws_iam_instance_profile" "this" {
 }
 
 
-data "aws_ami" "windows_2022" {
+data "aws_ami" "windows_2025" {
   most_recent = true
   owners      = ["amazon"]
   filter {
@@ -96,7 +96,7 @@ data "aws_ami" "myami_windows_kabu_station" {
 resource "aws_instance" "this" {
   for_each = toset(local.instance_names)
   # ゼロから作るときはREADME.mdへ
-  # ami       = data.aws_ami.windows_2022.id  # Golden Imageからではなく０から作り直したい時
+  # ami       = data.aws_ami.windows_2025.id  # Golden Imageからではなく０から作り直したい時
   # user_data = base64encode(local.user_data) # Golden Imageからではなく０から作り直したい時
   # ゴールデンイメージを使うとき
   ami                         = data.aws_ami.myami_windows_kabu_station.id
