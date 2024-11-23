@@ -1,3 +1,5 @@
 *.rdp
 *.pem
 ip.json
+.env*
+*.json

@@ -75,6 +75,11 @@ resource "aws_iam_instance_profile" "this" {
   role = aws_iam_role.this.name
 }
 
+resource "aws_iam_instance_profile" "linux" {
+  name = "kabu-json-linux-role-profile"
+  role = aws_iam_role.this.name
+}
+
 
 data "aws_ami" "windows_2025" {
   most_recent = true
@@ -110,6 +115,29 @@ resource "aws_instance" "this" {
   }
 }
 
+data "aws_ssm_parameter" "latest_amazonlinux_2023" {
+  # aws ssm get-parameters --names /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-arm64
+  # https://aws.amazon.com/jp/blogs/news/amazon-linux-2023-a-cloud-optimized-linux-distribution-with-long-term-support/
+  name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-arm64"
+}
+
+resource "aws_instance" "linux" {
+  for_each = toset(local.instance_names)
+  # ゼロから作るときはREADME.mdへ
+  ami = data.aws_ssm_parameter.latest_amazonlinux_2023.value
+  # ゴールデンイメージを使うとき
+  # ami                         = data.aws_ami.myami_windows_kabu_station.id
+  vpc_security_group_ids      = [aws_security_group.this.id]
+  instance_type               = "t4g.medium" # USD0.0336/h 2vCPU 4GiB EBSのみ 最大5ギガビット
+  iam_instance_profile        = aws_iam_instance_profile.linux.name
+  associate_public_ip_address = true
+  availability_zone           = aws_instance.this[each.key].availability_zone
+  key_name                    = aws_key_pair.this.key_name
+  tags = {
+    Name = "kabu-json-linux"
+  }
+}
+
 resource "aws_key_pair" "this" {
   key_name   = "kabu-json-kabustation"
   public_key = tls_private_key.key_pair.public_key_openssh
@@ -126,10 +154,16 @@ resource "local_file" "ssh_key" {
   content  = tls_private_key.key_pair.private_key_pem
 }
 
-resource "local_file" "ip" {
+resource "local_file" "windows_hostname" {
   for_each = toset(local.instance_names)
-  filename = "kabustation/ip.json"
-  content  = aws_instance.this[each.key].public_ip
+  filename = "kabustation/windows_hostname.json"
+  content  = aws_instance.this[each.key].public_dns
+}
+
+resource "local_file" "linux_ip" {
+  for_each = toset(local.instance_names)
+  filename = "kabustation/linux_ip.json"
+  content  = aws_instance.linux[each.key].public_ip
 }
 
 data "aws_vpc" "this" {
@@ -151,4 +185,11 @@ resource "aws_security_group" "this" {
     protocol    = "-1"
     cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
   }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_self" {
+  for_each                     = toset(local.instance_names)
+  security_group_id            = aws_security_group.this.id
+  referenced_security_group_id = aws_security_group.this.id
+  ip_protocol                  = -1
 }
