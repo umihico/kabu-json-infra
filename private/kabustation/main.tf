@@ -121,6 +121,15 @@ data "aws_ssm_parameter" "latest_amazonlinux_2023" {
   name = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-arm64"
 }
 
+
+data "aws_ami" "myami_linux" {
+  owners = ["self"]
+  filter {
+    name   = "name"
+    values = ["kabu-json-linux"]
+  }
+}
+
 resource "aws_instance" "linux" {
   for_each = toset(local.instance_names)
   # ゼロから作るときはREADME.mdへ

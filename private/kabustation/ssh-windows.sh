@@ -10,12 +10,13 @@ echo "  HostName ${windows_hostname}" >> ~/.ssh/config.d/kabu-json-windows
 echo "  RequestTTY no" >> ~/.ssh/config.d/kabu-json-windows
 echo "  User Administrator" >> ~/.ssh/config.d/kabu-json-windows
 echo "  IdentityFile ~/.ssh/kabu-json-kabustation.pem" >> ~/.ssh/config.d/kabu-json-windows
+echo "  StrictHostKeyChecking no" >> ~/.ssh/config.d/kabu-json-windows
 echo "  LocalForward 18080 localhost:18080" >> ~/.ssh/config.d/kabu-json-windows
 echo "  LocalForward 18081 localhost:18081" >> ~/.ssh/config.d/kabu-json-windows
 echo "  ServerAliveInterval 60" >> ~/.ssh/config.d/kabu-json-windows
 echo "  ServerAliveCountMax 0" >> ~/.ssh/config.d/kabu-json-windows
 
-ssh kabu-json-windows
+ssh kabu-json-windows $@
 # 公開鍵を変更してしまうと、以下のエラーがでるため、ユーザーデータを参考に再度公開鍵を設定し、ゴールデンイメージにして固める
 # Permission denied (publickey,keyboard-interactive)
 # 以下のコマンドをRDPしてPowerShellで実行する

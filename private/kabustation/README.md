@@ -20,6 +20,8 @@ terraform -chdir=private apply
 
 ## 初期設定、ゴールデンイメージの作成手順
 
+### Windows
+
 - user_dataとamiを設定して、terraform apply
 - 右サイドパネルのローカル Network を有効にするに yes
 - 株ステーションをインストールする。ショートカットをデスクトップに作成する？に yes
@@ -27,7 +29,14 @@ terraform -chdir=private apply
 - 右上歯車→右端のAPIタブ→APIを利用するにチェック→APIパスワードの本番用、検証用を設定→OK→指示通り一度アプリを閉じて再起動
 - C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startupへのショートカットをデスクトップに作成して、その中に
 kabuステーションのショートカットを入れておく
-- powershellから`wsl --install`
+- `Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))`
+- `choco install -y python3`
+- `pip install pyautogui` (Powershellでなく、cmdで実行しないとエラーした)
+- `scp private/kabustation/login.py kabu-json-windows:"C:/Users/Administrator/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/login.py"`
+
+### Linux
+
+- `sudo dnf install tmux -y`
 
 ## ゴールデンイメージの作成
 
