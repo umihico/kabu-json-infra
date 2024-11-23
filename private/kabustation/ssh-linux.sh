@@ -10,8 +10,8 @@ echo "  HostName ${ip}" >> ~/.ssh/config.d/kabu-json-linux
 echo "  User ec2-user" >> ~/.ssh/config.d/kabu-json-linux
 echo "  IdentityFile ~/.ssh/kabu-json-kabustation.pem" >> ~/.ssh/config.d/kabu-json-linux
 echo "  StrictHostKeyChecking no" >> ~/.ssh/config.d/kabu-json-linux
-echo "  ServerAliveInterval 60" >> ~/.ssh/config.d/kabu-json-linux
-echo "  ServerAliveCountMax 0" >> ~/.ssh/config.d/kabu-json-linux
+echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-linux
+echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-linux
 
 echo "KABU_STATION_API_PROD_PASSWORD=${KABU_STATION_API_PROD_PASSWORD}" > private/kabustation/.env.linux
 echo "KABU_COM_PASSWORD=${KABU_COM_PASSWORD}" >> private/kabustation/.env.linux

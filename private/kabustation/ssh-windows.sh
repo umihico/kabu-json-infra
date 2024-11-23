@@ -13,8 +13,8 @@ echo "  IdentityFile ~/.ssh/kabu-json-kabustation.pem" >> ~/.ssh/config.d/kabu-j
 echo "  StrictHostKeyChecking no" >> ~/.ssh/config.d/kabu-json-windows
 echo "  LocalForward 18080 localhost:18080" >> ~/.ssh/config.d/kabu-json-windows
 echo "  LocalForward 18081 localhost:18081" >> ~/.ssh/config.d/kabu-json-windows
-echo "  ServerAliveInterval 60" >> ~/.ssh/config.d/kabu-json-windows
-echo "  ServerAliveCountMax 0" >> ~/.ssh/config.d/kabu-json-windows
+echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-windows
+echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-windows
 
 ssh kabu-json-windows $@
 # 公開鍵を変更してしまうと、以下のエラーがでるため、ユーザーデータを参考に再度公開鍵を設定し、ゴールデンイメージにして固める

@@ -133,9 +133,9 @@ data "aws_ami" "myami_linux" {
 resource "aws_instance" "linux" {
   for_each = toset(local.instance_names)
   # ゼロから作るときはREADME.mdへ
-  ami = data.aws_ssm_parameter.latest_amazonlinux_2023.value
+  # ami = data.aws_ssm_parameter.latest_amazonlinux_2023.value
   # ゴールデンイメージを使うとき
-  # ami                         = data.aws_ami.myami_windows_kabu_station.id
+  ami                         = data.aws_ami.myami_linux.id
   vpc_security_group_ids      = [aws_security_group.this.id]
   instance_type               = "t4g.medium" # USD0.0336/h 2vCPU 4GiB EBSのみ 最大5ギガビット
   iam_instance_profile        = aws_iam_instance_profile.linux.name

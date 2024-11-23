@@ -36,7 +36,12 @@ kabuステーションのショートカットを入れておく
 
 ### Linux
 
-- `sudo dnf install tmux -y`
+- `sudo dnf -y install redis6 tmux python3.11 python3.11-pip`
+- `echo "alias py=python3.11" >> .bashrc`
+- `echo "alias pip=pip3.11" >> .bashrc`
+- `sudo systemctl enable redis6`
+- `sudo systemctl start redis6`
+- `pip install -r requirements.txt`
 
 ## ゴールデンイメージの作成
 
