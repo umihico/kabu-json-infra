@@ -49,3 +49,12 @@ kabuステーションのショートカットを入れておく
 ```bash
 sh private/kabustation/create-golden-image.sh
 ```
+
+## 接続手順
+
+- `terraform -chdir=private apply -auto-approve -var=instance_names=0` インスタンス作成
+- `sh private/kabustation/rdp.sh` kabuステーションの起動
+- `sh private/kabustation/ssh-windows.sh` WindowsのSSH接続、Linuxにも転送されるconfigファイルの生成
+- `sh private/kabustation/ssh-linux.sh` LinuxのSSH接続
+  - `tmux new -s ssh` でセッションを作成して`ssh kabu-json-windows`で接続しておく
+- `terraform -chdir=private apply -auto-approve` インスタンス削除
