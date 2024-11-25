@@ -15,3 +15,5 @@ aws ec2 create-image --instance-id ${WINDOWS_INSTANCE_ID} --name "kabu-json-wind
 aws ec2 create-image --instance-id ${LINUX_INSTANCE_ID} --name "kabu-json-linux" --reboot
 aws ec2 wait image-available --image-ids $(aws ec2 describe-images --filters "Name=name,Values=kabu-json-windows" --query 'Images[*].ImageId' --output text)
 aws ec2 wait image-available --image-ids $(aws ec2 describe-images --filters "Name=name,Values=kabu-json-linux" --query 'Images[*].ImageId' --output text)
+aws ec2 terminate-instances --instance-ids ${WINDOWS_INSTANCE_ID}
+aws ec2 terminate-instances --instance-ids ${LINUX_INSTANCE_ID}
