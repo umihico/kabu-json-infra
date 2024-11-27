@@ -9,6 +9,7 @@ echo "Host kabu-json-linux" > ~/.ssh/config.d/kabu-json-linux
 echo "  HostName ${ip}" >> ~/.ssh/config.d/kabu-json-linux
 echo "  User ec2-user" >> ~/.ssh/config.d/kabu-json-linux
 echo "  IdentityFile ~/.ssh/kabu-json-kabustation.pem" >> ~/.ssh/config.d/kabu-json-linux
+echo "  RequestTTY yes" >> ~/.ssh/config.d/kabu-json-linux # forceにするとrsyncがコケるようになった: protocol version mismatch -- is your shell clean? rsync error: protocol incompatibility (code 2) at compat.c(626) [sender=3.3.0]
 echo "  StrictHostKeyChecking no" >> ~/.ssh/config.d/kabu-json-linux
 echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-linux
 echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-linux
