@@ -13,6 +13,7 @@ echo "  RequestTTY yes" >> ~/.ssh/config.d/kabu-json-linux # forceにするとrs
 echo "  StrictHostKeyChecking no" >> ~/.ssh/config.d/kabu-json-linux
 echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-linux
 echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-linux
+echo "  LocalForward 3389 localhost:3389" >> ~/.ssh/config.d/kabu-json-linux
 
 echo "KABU_STATION_API_PROD_PASSWORD=${KABU_STATION_API_PROD_PASSWORD}" > private/kabustation/.env.linux
 echo "KABU_COM_PASSWORD=${KABU_COM_PASSWORD}" >> private/kabustation/.env.linux

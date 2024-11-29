@@ -11,6 +11,7 @@ echo "  RequestTTY no" >> ~/.ssh/config.d/kabu-json-windows
 echo "  User Administrator" >> ~/.ssh/config.d/kabu-json-windows
 echo "  IdentityFile ~/.ssh/kabu-json-kabustation.pem" >> ~/.ssh/config.d/kabu-json-windows
 echo "  StrictHostKeyChecking no" >> ~/.ssh/config.d/kabu-json-windows
+echo "  LocalForward 3389 localhost:3389" >> ~/.ssh/config.d/kabu-json-windows
 echo "  LocalForward 18080 localhost:18080" >> ~/.ssh/config.d/kabu-json-windows
 echo "  LocalForward 18081 localhost:18081" >> ~/.ssh/config.d/kabu-json-windows
 echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-windows

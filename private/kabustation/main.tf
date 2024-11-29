@@ -24,6 +24,12 @@ $exeInstallerPath = "C:\\Users\\Administrator\\Downloads\\chrome_installer.exe"
 (New-Object System.Net.WebClient).DownloadFile($exeInstaller, $exeInstallerPath)
 Start-Process -FilePath $exeInstallerPath -ArgumentList "/silent /install" -Wait
 
+# Enable Auto-Login
+$registryPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+Set-ItemProperty -Path $registryPath -Name "DefaultUserName" -Value "Administrator"
+Set-ItemProperty -Path $registryPath -Name "DefaultPassword" -Value "${var.rdp_password}"
+Set-ItemProperty -Path $registryPath -Name "AutoAdminLogon" -Value "1"
+
 # Install SSH Server (https://dev.classmethod.jp/articles/how-to-setup-windows-server-sshd-with-ec2launch-v2/)
 Start-Service sshd
 Set-Service -Name sshd -StartupType 'Automatic'
@@ -105,7 +111,7 @@ resource "aws_instance" "this" {
   # user_data = base64encode(local.user_data) # Golden Imageからではなく０から作り直したい時
   # ゴールデンイメージを使うとき
   ami                         = data.aws_ami.myami_windows_kabu_station.id
-  vpc_security_group_ids      = [aws_security_group.this.id]
+  vpc_security_group_ids      = [aws_security_group.windows.id]
   instance_type               = "t3a.medium" # USD0.056/h 2vCPU 4GiB EBSのみ 最大5ギガビット
   iam_instance_profile        = aws_iam_instance_profile.this.name
   associate_public_ip_address = true
@@ -136,7 +142,7 @@ resource "aws_instance" "linux" {
   # ami = data.aws_ssm_parameter.latest_amazonlinux_2023.value
   # ゴールデンイメージを使うとき
   ami                         = data.aws_ami.myami_linux.id
-  vpc_security_group_ids      = [aws_security_group.this.id]
+  vpc_security_group_ids      = [aws_security_group.linux.id]
   instance_type               = "t4g.medium" # USD0.0336/h 2vCPU 4GiB EBSのみ 最大5ギガビット
   iam_instance_profile        = aws_iam_instance_profile.linux.name
   associate_public_ip_address = true
@@ -179,8 +185,19 @@ data "aws_vpc" "this" {
   default = true
 }
 
-resource "aws_security_group" "this" {
+resource "aws_security_group" "windows" {
   name_prefix = "kabu-json-windows"
+  vpc_id      = data.aws_vpc.this.id
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "linux" {
+  name_prefix = "kabu-json-linux"
   vpc_id      = data.aws_vpc.this.id
   egress {
     from_port   = 0
@@ -196,9 +213,8 @@ resource "aws_security_group" "this" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_self" {
-  for_each                     = toset(local.instance_names)
-  security_group_id            = aws_security_group.this.id
-  referenced_security_group_id = aws_security_group.this.id
+resource "aws_vpc_security_group_ingress_rule" "allow_from_linux_to_windows" {
+  security_group_id            = aws_security_group.windows.id
+  referenced_security_group_id = aws_security_group.linux.id
   ip_protocol                  = -1
 }
