@@ -27,7 +27,8 @@ echo "  RequestTTY yes" >> ~/.ssh/config.d/kabu-json-linux # forceにするとrs
 echo "  StrictHostKeyChecking no" >> ~/.ssh/config.d/kabu-json-linux
 echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-linux
 echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-linux
-echo "  LocalForward 3389 localhost:3389" >> ~/.ssh/config.d/kabu-json-linux
+echo "  LocalForward 3389 ${windows_hostname}:3389" >> ~/.ssh/config.d/kabu-json-linux
+scp ~/.ssh/config.d/kabu-json-windows kabu-json-linux:~/.ssh/config
 
 # イメージがリセットされたら、秘密鍵を再度設定する必要がある
 # 多段SSHはProxyJumpの方が好ましいが、ローカル端末抜きでLinuxがWindowsに常時接続、売買を実行してほしいので、秘密鍵含め各クレデンシャルをWindowsに持たせる
@@ -37,7 +38,6 @@ echo "  LocalForward 3389 localhost:3389" >> ~/.ssh/config.d/kabu-json-linux
 # scp private/kabustation/kabu-json-kabustation.pem kabu-json-linux:~/.ssh/
 # ssh kabu-json-linux 'chmod 600 ~/.ssh/kabu-json-kabustation.pem;'
 # scp private/kabustation/.env.linux kabu-json-linux:~/.env.linux
-# scp ~/.ssh/config.d/kabu-json-windows kabu-json-linux:~/.ssh/config
 
 
 
