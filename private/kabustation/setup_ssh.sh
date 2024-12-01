@@ -7,19 +7,6 @@ LINUX_INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=k
 aws ec2 wait instance-status-ok --instance-ids ${WINDOWS_INSTANCE_ID} ${LINUX_INSTANCE_ID}
 
 WINDOWS_INTERNAL_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-windows" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].PrivateIpAddress' --output text)
-echo "Host kabu-json-windows" > ~/.ssh/config.d/kabu-json-windows
-# hostnameにしておくと外からはパブリックIPで中からはプライベートIPで接続できる
-echo "  HostName ${WINDOWS_INTERNAL_IP}" >> ~/.ssh/config.d/kabu-json-windows
-echo "  RequestTTY no" >> ~/.ssh/config.d/kabu-json-windows
-echo "  User Administrator" >> ~/.ssh/config.d/kabu-json-windows
-echo "  IdentityFile ~/.ssh/kabu-json-kabustation.pem" >> ~/.ssh/config.d/kabu-json-windows
-echo "  StrictHostKeyChecking no" >> ~/.ssh/config.d/kabu-json-windows
-echo "  LocalForward 3389 localhost:3389" >> ~/.ssh/config.d/kabu-json-windows
-echo "  LocalForward 18080 localhost:18080" >> ~/.ssh/config.d/kabu-json-windows
-echo "  LocalForward 18081 localhost:18081" >> ~/.ssh/config.d/kabu-json-windows
-echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-windows
-echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-windows
-
 LINUX_PUBLIC_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-linux" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
 echo "Host kabu-json-linux" > ~/.ssh/config.d/kabu-json-linux
 echo "  HostName ${LINUX_PUBLIC_IP}" >> ~/.ssh/config.d/kabu-json-linux
@@ -32,7 +19,6 @@ echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-linux
 echo "  LocalForward 18080 localhost:18080" >> ~/.ssh/config.d/kabu-json-linux
 echo "  LocalForward 18081 localhost:18081" >> ~/.ssh/config.d/kabu-json-linux
 echo "  LocalForward 3389 ${WINDOWS_INTERNAL_IP}:3389" >> ~/.ssh/config.d/kabu-json-linux
-scp ~/.ssh/config.d/kabu-json-windows kabu-json-linux:~/.ssh/config
 
 # イメージがリセットされたら、秘密鍵を再度設定する必要がある
 # 多段SSHはProxyJumpの方が好ましいが、ローカル端末抜きでLinuxがWindowsに常時接続、売買を実行してほしいので、秘密鍵含め各クレデンシャルをWindowsに持たせる
