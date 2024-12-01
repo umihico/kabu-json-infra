@@ -115,7 +115,7 @@ resource "aws_instance" "this" {
   instance_type               = "t3a.medium" # USD0.056/h 2vCPU 4GiB EBSのみ 最大5ギガビット
   iam_instance_profile        = aws_iam_instance_profile.this.name
   associate_public_ip_address = true
-  key_name                    = aws_key_pair.this.key_name
+  key_name                    = data.aws_key_pair.this.key_name
   tags = {
     Name = "kabu-json-windows"
   }
@@ -147,24 +147,27 @@ resource "aws_instance" "linux" {
   iam_instance_profile        = aws_iam_instance_profile.linux.name
   associate_public_ip_address = true
   availability_zone           = aws_instance.this[each.key].availability_zone
-  key_name                    = aws_key_pair.this.key_name
+  key_name                    = data.aws_key_pair.this.key_name
   tags = {
     Name = "kabu-json-linux"
   }
 }
 
-variable "public_key" {
-  type = string
-  # environment variable TF_VAR_public_key
-}
 
 # ed25519はWindowsでは使えないのでRSA
-resource "aws_key_pair" "this" {
-  key_name   = "kabu-json-kabustation"
-  public_key = var.public_key
+data "aws_key_pair" "this" {
+  key_name = "kabu-json-kabustation"
 }
 
 # RSA作成コマンド
+# variable "public_key" {
+#   type = string
+#   # environment variable TF_VAR_public_key
+# }
+# resource "aws_key_pair" "this" {
+#   key_name   = "kabu-json-kabustation"
+#   public_key = var.public_key
+# }
 # resource "tls_private_key" "key_pair" {
 #   algorithm = "RSA"
 #   rsa_bits  = 4096
