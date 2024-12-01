@@ -153,21 +153,27 @@ resource "aws_instance" "linux" {
   }
 }
 
-resource "aws_key_pair" "this" {
-  key_name   = "kabu-json-kabustation"
-  public_key = tls_private_key.key_pair.public_key_openssh
+variable "public_key" {
+  type = string
+  # environment variable TF_VAR_public_key
 }
 
 # ed25519はWindowsでは使えないのでRSA
-resource "tls_private_key" "key_pair" {
-  algorithm = "RSA"
-  rsa_bits  = 4096
+resource "aws_key_pair" "this" {
+  key_name   = "kabu-json-kabustation"
+  public_key = var.public_key
 }
 
-resource "local_file" "ssh_key" {
-  filename = "kabustation/${aws_key_pair.this.key_name}.pem"
-  content  = tls_private_key.key_pair.private_key_pem
-}
+# RSA作成コマンド
+# resource "tls_private_key" "key_pair" {
+#   algorithm = "RSA"
+#   rsa_bits  = 4096
+# }
+
+# resource "local_file" "ssh_key" {
+#   filename = "kabustation/${aws_key_pair.this.key_name}.pem"
+#   content  = tls_private_key.key_pair.private_key_pem
+# }
 
 resource "local_file" "windows_hostname" {
   for_each = toset(local.instance_names)

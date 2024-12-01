@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euoxv pipefail
 
-cp private/kabustation/kabu-json-kabustation.pem ~/.ssh/
-chmod 600 ~/.ssh/kabu-json-kabustation.pem
 windows_hostname=$(cat private/kabustation/windows_hostname.json)
 echo "Host kabu-json-windows" > ~/.ssh/config.d/kabu-json-windows
 # hostnameにしておくと外からはパブリックIPで中からはプライベートIPで接続できる
@@ -18,7 +16,6 @@ echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-windows
 echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-windows
 
 ip=$(cat private/kabustation/linux_ip.json)
-windows_hostname=$(cat private/kabustation/windows_hostname.json)
 echo "Host kabu-json-linux" > ~/.ssh/config.d/kabu-json-linux
 echo "  HostName ${ip}" >> ~/.ssh/config.d/kabu-json-linux
 echo "  User ec2-user" >> ~/.ssh/config.d/kabu-json-linux

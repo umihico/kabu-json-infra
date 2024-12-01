@@ -153,8 +153,10 @@ variable "instance_names" {
   type    = string
   default = ""
 }
+variable "public_key" { type = string } # TF_VAR_public_key
 module "kabustation" {
   source         = "./kabustation"
   rdp_password   = var.rdp_password
   instance_names = var.instance_names
+  public_key     = var.public_key
 }
