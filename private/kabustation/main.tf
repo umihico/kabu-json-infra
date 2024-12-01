@@ -175,18 +175,6 @@ resource "aws_key_pair" "this" {
 #   content  = tls_private_key.key_pair.private_key_pem
 # }
 
-resource "local_file" "windows_hostname" {
-  for_each = toset(local.instance_names)
-  filename = "kabustation/windows_hostname.json"
-  content  = aws_instance.this[each.key].public_dns
-}
-
-resource "local_file" "linux_ip" {
-  for_each = toset(local.instance_names)
-  filename = "kabustation/linux_ip.json"
-  content  = aws_instance.linux[each.key].public_ip
-}
-
 data "aws_vpc" "this" {
   default = true
 }

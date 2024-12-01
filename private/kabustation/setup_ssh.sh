@@ -1,10 +1,10 @@
 #!/bin/bash
 set -euoxv pipefail
 
-windows_hostname=$(cat private/kabustation/windows_hostname.json)
+WINDOWS_INTERNAL_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-windows" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].PrivateIpAddress' --output text)
 echo "Host kabu-json-windows" > ~/.ssh/config.d/kabu-json-windows
 # hostnameにしておくと外からはパブリックIPで中からはプライベートIPで接続できる
-echo "  HostName ${windows_hostname}" >> ~/.ssh/config.d/kabu-json-windows
+echo "  HostName ${WINDOWS_INTERNAL_IP}" >> ~/.ssh/config.d/kabu-json-windows
 echo "  RequestTTY no" >> ~/.ssh/config.d/kabu-json-windows
 echo "  User Administrator" >> ~/.ssh/config.d/kabu-json-windows
 echo "  IdentityFile ~/.ssh/kabu-json-kabustation.pem" >> ~/.ssh/config.d/kabu-json-windows
@@ -15,23 +15,23 @@ echo "  LocalForward 18081 localhost:18081" >> ~/.ssh/config.d/kabu-json-windows
 echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-windows
 echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-windows
 
-ip=$(cat private/kabustation/linux_ip.json)
+LINUX_PUBLIC_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-linux" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
 echo "Host kabu-json-linux" > ~/.ssh/config.d/kabu-json-linux
-echo "  HostName ${ip}" >> ~/.ssh/config.d/kabu-json-linux
+echo "  HostName ${LINUX_PUBLIC_IP}" >> ~/.ssh/config.d/kabu-json-linux
 echo "  User ec2-user" >> ~/.ssh/config.d/kabu-json-linux
 echo "  IdentityFile ~/.ssh/kabu-json-kabustation.pem" >> ~/.ssh/config.d/kabu-json-linux
 echo "  RequestTTY yes" >> ~/.ssh/config.d/kabu-json-linux # forceにするとrsyncがコケるようになった: protocol version mismatch -- is your shell clean? rsync error: protocol incompatibility (code 2) at compat.c(626) [sender=3.3.0]
 echo "  StrictHostKeyChecking no" >> ~/.ssh/config.d/kabu-json-linux
 echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-linux
 echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-linux
-echo "  LocalForward 3389 ${windows_hostname}:3389" >> ~/.ssh/config.d/kabu-json-linux
+echo "  LocalForward 3389 ${WINDOWS_INTERNAL_IP}:3389" >> ~/.ssh/config.d/kabu-json-linux
 scp ~/.ssh/config.d/kabu-json-windows kabu-json-linux:~/.ssh/config
 
 # イメージがリセットされたら、秘密鍵を再度設定する必要がある
 # 多段SSHはProxyJumpの方が好ましいが、ローカル端末抜きでLinuxがWindowsに常時接続、売買を実行してほしいので、秘密鍵含め各クレデンシャルをWindowsに持たせる
 # echo "KABU_STATION_API_PROD_PASSWORD=${KABU_STATION_API_PROD_PASSWORD}" > private/kabustation/.env.linux
 # echo "KABU_COM_PASSWORD=${KABU_COM_PASSWORD}" >> private/kabustation/.env.linux
-# echo "WINDOWS_HOSTNAME=${windows_hostname}" >> private/kabustation/.env.linux
+# echo "WINDOWS_HOSTNAME=${WINDOWS_INTERNAL_IP}" >> private/kabustation/.env.linux
 # scp private/kabustation/kabu-json-kabustation.pem kabu-json-linux:~/.ssh/
 # ssh kabu-json-linux 'chmod 600 ~/.ssh/kabu-json-kabustation.pem;'
 # scp private/kabustation/.env.linux kabu-json-linux:~/.env.linux
