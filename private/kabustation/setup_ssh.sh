@@ -1,11 +1,6 @@
 #!/bin/bash
 set -euoxv pipefail
 
-
-WINDOWS_INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-windows" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].InstanceId' --output text)
-LINUX_INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-linux" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].InstanceId' --output text)
-aws ec2 wait instance-status-ok --instance-ids ${WINDOWS_INSTANCE_ID} ${LINUX_INSTANCE_ID}
-
 WINDOWS_INTERNAL_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-windows" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].PrivateIpAddress' --output text)
 LINUX_INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-linux" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].InstanceId' --output text)
 echo "Host kabu-json-linux" > ~/.ssh/config.d/kabu-json-linux
