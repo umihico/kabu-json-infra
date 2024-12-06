@@ -183,8 +183,8 @@ data "aws_vpc" "this" {
 }
 
 resource "aws_security_group" "windows" {
-  name_prefix = "kabu-json-windows"
-  vpc_id      = data.aws_vpc.this.id
+  name   = "kabu-json-windows"
+  vpc_id = data.aws_vpc.this.id
   egress {
     from_port   = 0
     to_port     = 0
@@ -194,8 +194,8 @@ resource "aws_security_group" "windows" {
 }
 
 resource "aws_security_group" "linux" {
-  name_prefix = "kabu-json-linux"
-  vpc_id      = data.aws_vpc.this.id
+  name   = "kabu-json-linux"
+  vpc_id = data.aws_vpc.this.id
   egress {
     from_port   = 0
     to_port     = 0
