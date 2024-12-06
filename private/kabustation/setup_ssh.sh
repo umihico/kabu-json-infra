@@ -7,9 +7,8 @@ LINUX_INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=k
 aws ec2 wait instance-status-ok --instance-ids ${WINDOWS_INSTANCE_ID} ${LINUX_INSTANCE_ID}
 
 WINDOWS_INTERNAL_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-windows" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].PrivateIpAddress' --output text)
-LINUX_PUBLIC_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-linux" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+LINUX_INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-linux" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].InstanceId' --output text)
 echo "Host kabu-json-linux" > ~/.ssh/config.d/kabu-json-linux
-echo "  HostName ${LINUX_PUBLIC_IP}" >> ~/.ssh/config.d/kabu-json-linux
 echo "  User ec2-user" >> ~/.ssh/config.d/kabu-json-linux
 echo "  IdentityFile ~/.ssh/kabu-json-kabustation.pem" >> ~/.ssh/config.d/kabu-json-linux
 echo "  RequestTTY yes" >> ~/.ssh/config.d/kabu-json-linux # forceにするとrsyncがコケるようになった: protocol version mismatch -- is your shell clean? rsync error: protocol incompatibility (code 2) at compat.c(626) [sender=3.3.0]
@@ -19,6 +18,7 @@ echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-linux
 echo "  LocalForward 18080 localhost:18080" >> ~/.ssh/config.d/kabu-json-linux
 echo "  LocalForward 18081 localhost:18081" >> ~/.ssh/config.d/kabu-json-linux
 echo "  LocalForward 3389 ${WINDOWS_INTERNAL_IP}:3389" >> ~/.ssh/config.d/kabu-json-linux
+echo "  ProxyCommand sh -c \"aws ssm start-session --target ${LINUX_INSTANCE_ID} --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\"" >> ~/.ssh/config.d/kabu-json-linux
 
 # イメージがリセットされたら、秘密鍵を再度設定する必要がある
 # 多段SSHはProxyJumpの方が好ましいが、ローカル端末抜きでLinuxがWindowsに常時接続、売買を実行してほしいので、秘密鍵含め各クレデンシャルをWindowsに持たせる

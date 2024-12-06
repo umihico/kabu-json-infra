@@ -202,12 +202,13 @@ resource "aws_security_group" "linux" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
-  }
+  # 通常はセッションマネージャーで踏み台にするので、実IPでの開放は不要
+  # ingress {
+  #   from_port   = 0
+  #   to_port     = 0
+  #   protocol    = "-1"
+  #   cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
+  # }
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allow_from_linux_to_windows" {
