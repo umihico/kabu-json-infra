@@ -10,6 +10,7 @@ echo "  RequestTTY yes" >> ~/.ssh/config.d/kabu-json-linux # forceにするとrs
 echo "  StrictHostKeyChecking accept-new" >> ~/.ssh/config.d/kabu-json-linux
 echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-linux
 echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-linux
+echo "  LocalForward 6379 localhost:6379" >> ~/.ssh/config.d/kabu-json-linux
 echo "  LocalForward 18080 localhost:18080" >> ~/.ssh/config.d/kabu-json-linux
 echo "  LocalForward 18081 localhost:18081" >> ~/.ssh/config.d/kabu-json-linux
 echo "  LocalForward 3389 ${WINDOWS_INTERNAL_IP}:3389" >> ~/.ssh/config.d/kabu-json-linux
