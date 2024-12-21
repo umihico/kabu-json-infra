@@ -1,21 +1,7 @@
 #!/bin/bash
 set -euoxv pipefail
 
-WINDOWS_INTERNAL_IP=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-windows" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].PrivateIpAddress' --output text)
-LINUX_INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=kabu-json-linux" "Name=instance-state-name,Values=running" --query 'Reservations[*].Instances[*].InstanceId' --output text)
-echo "Host kabu-json-linux" > ~/.ssh/config.d/kabu-json-linux
-echo "  User ec2-user" >> ~/.ssh/config.d/kabu-json-linux
-echo "  IdentityFile ~/.ssh/kabu-json-kabustation.pem" >> ~/.ssh/config.d/kabu-json-linux
-echo "  RequestTTY yes" >> ~/.ssh/config.d/kabu-json-linux # forceにするとrsyncがコケるようになった: protocol version mismatch -- is your shell clean? rsync error: protocol incompatibility (code 2) at compat.c(626) [sender=3.3.0]
-echo "  StrictHostKeyChecking accept-new" >> ~/.ssh/config.d/kabu-json-linux
-echo "  ServerAliveInterval 10" >> ~/.ssh/config.d/kabu-json-linux
-echo "  ServerAliveCountMax 10" >> ~/.ssh/config.d/kabu-json-linux
-echo "  LocalForward 6379 localhost:6379" >> ~/.ssh/config.d/kabu-json-linux
-echo "  LocalForward 18080 localhost:18080" >> ~/.ssh/config.d/kabu-json-linux
-echo "  LocalForward 18081 localhost:18081" >> ~/.ssh/config.d/kabu-json-linux
-echo "  LocalForward 3389 ${WINDOWS_INTERNAL_IP}:3389" >> ~/.ssh/config.d/kabu-json-linux
-echo "  ProxyCommand sh -c \"aws ssm start-session --target ${LINUX_INSTANCE_ID} --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\"" >> ~/.ssh/config.d/kabu-json-linux
-
+aws s3 cp s3://kabu-json-private-static-data-bucket/.ssh/config.d/kabu-json-linux ~/.ssh/config.d/kabu-json-linux
 ssh-keygen -R kabu-json-linux # IPが変わった場合に、~/.ssh/known_hostsから古い方を削除して、Man in the Middle Attack警告を不要に出さない
 
 # イメージがリセットされたら、秘密鍵を再度設定する必要がある

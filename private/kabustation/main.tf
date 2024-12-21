@@ -216,3 +216,53 @@ resource "aws_vpc_security_group_ingress_rule" "allow_from_linux_to_windows" {
   referenced_security_group_id = aws_security_group.linux.id
   ip_protocol                  = -1
 }
+
+
+data "aws_s3_bucket" "private_bucket" {
+  bucket = "kabu-json-private-static-data-bucket"
+}
+
+# ssh-keygen -R kabu-json-windows
+# aws s3 cp s3://kabu-json-private-static-data-bucket/.ssh/config.d/kabu-json-windows ~/.ssh/config.d/kabu-json-windows
+# chmod 600 ~/.ssh/config.d/kabu-json-windows
+resource "aws_s3_object" "ssh_config_windows" {
+  bucket   = data.aws_s3_bucket.private_bucket.bucket
+  key      = ".ssh/config.d/kabu-json-windows"
+  for_each = toset(local.instance_names)
+  content  = <<-EOF
+  Host kabu-json-windows
+    RequestTTY no
+    User Administrator
+    IdentityFile ~/.ssh/kabu-json-kabustation.pem
+    StrictHostKeyChecking accept-new
+    LocalForward 3389 localhost:3389
+    LocalForward 18080 localhost:18080
+    LocalForward 18081 localhost:18081
+    ServerAliveInterval 10
+    ServerAliveCountMax 10
+    ProxyCommand sh -c "aws ssm start-session --target ${aws_instance.this[each.key].id} --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
+  EOF
+}
+
+# ssh-keygen -R kabu-json-linux
+# aws s3 cp s3://kabu-json-private-static-data-bucket/.ssh/config.d/kabu-json-linux ~/.ssh/config.d/kabu-json-linux
+# chmod 600 ~/.ssh/config.d/kabu-json-linux
+resource "aws_s3_object" "ssh_config_linux" {
+  bucket   = data.aws_s3_bucket.private_bucket.bucket
+  key      = ".ssh/config.d/kabu-json-linux"
+  for_each = toset(local.instance_names)
+  content  = <<-EOF
+  Host kabu-json-linux
+    User ec2-user
+    IdentityFile ~/.ssh/kabu-json-kabustation.pem
+    RequestTTY yes
+    StrictHostKeyChecking accept-new
+    ServerAliveInterval 10
+    ServerAliveCountMax 10
+    LocalForward 6379 localhost:6379
+    LocalForward 18080 localhost:18080
+    LocalForward 18081 localhost:18081
+    LocalForward 3389 ${aws_instance.this[each.key].private_ip}:3389
+    ProxyCommand sh -c "aws ssm start-session --target ${aws_instance.linux[each.key].id} --document-name AWS-StartSSHSession --parameters 'portNumber=%p'"
+  EOF
+}

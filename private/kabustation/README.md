@@ -33,6 +33,7 @@ kabuステーションのショートカットを入れておく
 - `choco install -y python3`
 - `pip install pyautogui` (Powershellでなく、cmdで実行しないとエラーした)
 - `scp private/kabustation/login.py kabu-json-windows:"C:/Users/Administrator/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup/login.py"`
+- [こちら](https://docs.aws.amazon.com/systems-manager/latest/userguide/manually-install-ssm-agent-windows.html)参考にSSMエージェントをインストールする
 
 ### Linux
 
@@ -58,3 +59,19 @@ sh private/kabustation/create-golden-image.sh
 - `sh private/kabustation/ssh-linux.sh` LinuxのSSH接続
 - `sh private/kabustation/ssh-linux.sh tmux new -d -s winssh ssh kabu-json-windows`で接続しておく
 - `terraform -chdir=private apply -auto-approve` インスタンス削除
+
+## 実行ログの取得
+
+```bash
+$latestFile = Get-ChildItem "C:\Users\Administrator\AppData\Roaming\KaBuS\Log" | 
+              Where-Object { -not $_.PSIsContainer } | 
+              Sort-Object LastWriteTime -Descending | 
+              Select-Object -First 1
+Get-Content $latestFile.FullName -Wait -Tail 10
+```
+
+## Windowsのみ起動する場合
+
+```bash
+terraform -chdir=private apply -var=instance_names=0 -target='module.kabustation.aws_instance.this["0"]'
+```
