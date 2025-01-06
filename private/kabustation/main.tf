@@ -151,6 +151,9 @@ resource "aws_instance" "linux" {
   tags = {
     Name = "kabu-json-linux"
   }
+  root_block_device {
+    volume_size = 16
+  }
 }
 
 
