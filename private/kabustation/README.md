@@ -44,6 +44,7 @@ kabuステーションのショートカットを入れておく
 - `sudo systemctl enable redis6`
 - `sudo systemctl start redis6`
 - `pip install -r requirements.txt`
+- playwrightをインストールする`pip install pytest-playwright`と`playwright install`を実行する。
 
 ## ゴールデンイメージの作成
 
