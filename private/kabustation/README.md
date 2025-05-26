@@ -74,5 +74,13 @@ Get-Content $latestFile.FullName -Wait -Tail 10
 ## Windowsのみ起動する場合
 
 ```bash
-terraform -chdir=private apply -var=instance_names=0 -target='module.kabustation.aws_instance.this["0"]'
+terraform -chdir=private apply -var=instance_names=0 -target='module.kabustation.aws_s3_object.ssh_config_windows["0"]' -target='module.kabustation.aws_instance.this["0"]'
+aws s3 cp s3://kabu-json-private-static-data-bucket/.ssh/config.d/kabu-json-windows ~/.ssh/config.d/kabu-json-windows
+ssh-keygen -R kabu-json-windows # IPが変わった場合に、~/.ssh/known_hostsから古い方を削除して、Man in the Middle Attack警告を不要に出さない
+ssh kabu-json-windows ls # 疎通確認
+ssh -N -o ServerAliveInterval=60 kabu-json-windows # ポートフォワーディング専用
+sh private/kabustation/rdp.sh
+
+# インスタンス削除
+terraform -chdir=private apply -target='module.kabustation.aws_s3_object.ssh_config_windows["0"]' -target='module.kabustation.aws_instance.this["0"]'
 ```
