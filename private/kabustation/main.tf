@@ -119,6 +119,14 @@ resource "aws_instance" "this" {
   tags = {
     Name = "kabu-json-windows"
   }
+  # root_block_device {
+  # volume_size = 32
+  # Windowsディレクトリ: 約21.8 GB
+  # Program Filesディレクトリ: 約1.9 GB
+  # ユーザーディレクトリ: 約0.08 GB
+  # WinSxSディレクトリが約13GBを使用していることがわかりました。これはWindowsの更新プログラムのキャッシュで、通常は大きな容量を消費します。
+  # 実際はC:\Users\Administrator\AppData\Roaming\KabuS\Log\APILogが5GBほど使っていた
+  # }
 }
 
 data "aws_ssm_parameter" "latest_amazonlinux_2023" {
