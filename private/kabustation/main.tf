@@ -271,6 +271,7 @@ resource "aws_s3_object" "ssh_config_linux" {
     ServerAliveInterval 10
     ServerAliveCountMax 10
     LocalForward 6379 localhost:6379
+    LocalForward 8085 localhost:8085
     LocalForward 18080 localhost:18080
     LocalForward 18081 localhost:18081
     LocalForward 3389 ${aws_instance.this[each.key].private_ip}:3389
