@@ -44,6 +44,7 @@ resource "aws_iam_role" "github_actions" {
       Condition = {
         StringLike = {
           "token.actions.githubusercontent.com:sub" = [
+            "repo:umihico/kabu:*",
             "repo:umihico/kabu-json-*"
           ]
         }
