@@ -151,7 +151,7 @@ resource "aws_instance" "linux" {
   # ゴールデンイメージを使うとき
   ami                         = data.aws_ami.myami_linux.id
   vpc_security_group_ids      = [aws_security_group.linux.id]
-  instance_type               = "t4g.medium" # USD0.0336/h 2vCPU 4GiB EBSのみ 最大5ギガビット
+  instance_type               = "t4g.large" # USD0.0336/h 2vCPU 4GiB EBSのみ 最大5ギガビット
   iam_instance_profile        = aws_iam_instance_profile.linux.name
   associate_public_ip_address = true
   availability_zone           = aws_instance.this[each.key].availability_zone
