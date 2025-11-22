@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euoxv pipefail
 
-# aws s3 cp s3://kabu-json-private-static-data-bucket/.ssh/config.d/kabu-json-windows ~/.ssh/config.d/kabu-json-windows
-# ssh-keygen -R kabu-json-windows # IPが変わった場合に、~/.ssh/known_hostsから古い方を削除して、Man in the Middle Attack警告を不要に出さない
+aws s3 cp s3://kabu-json-private-static-data-bucket/.ssh/config.d/kabu-json-windows ~/.ssh/config.d/kabu-json-windows
+ssh-keygen -R kabu-json-windows # IPが変わった場合に、~/.ssh/known_hostsから古い方を削除して、Man in the Middle Attack警告を不要に出さない
 aws s3 cp s3://kabu-json-private-static-data-bucket/.ssh/config.d/kabu-json-linux ~/.ssh/config.d/kabu-json-linux
 ssh-keygen -R kabu-json-linux # IPが変わった場合に、~/.ssh/known_hostsから古い方を削除して、Man in the Middle Attack警告を不要に出さない
 
