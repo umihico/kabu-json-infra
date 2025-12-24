@@ -43,6 +43,13 @@ resource "aws_s3_object" "hello_world" {
   EOF
 }
 
+resource "aws_s3_object" "login_config" {
+  bucket       = aws_s3_bucket.private_bucket.id
+  key          = "login_config.json"
+  content_type = "application/json"
+  content      = jsonencode({ enabled = true })
+}
+
 resource "aws_cloudfront_origin_access_identity" "oai" {
   comment = "OAI for accessing S3 bucket"
 }
