@@ -47,7 +47,7 @@ resource "aws_s3_object" "login_config" {
   bucket       = aws_s3_bucket.private_bucket.id
   key          = "login_config.json"
   content_type = "application/json"
-  content      = jsonencode({ enabled = true })
+  content      = jsonencode({ enabled = var.login_enabled })
 }
 
 resource "aws_cloudfront_origin_access_identity" "oai" {
@@ -119,6 +119,11 @@ resource "aws_cloudfront_distribution" "website_distribution" {
 variable "private_cloudfront_password" {
   type = string
   # environment variable TF_VAR_private_cloudfront_password
+}
+
+variable "login_enabled" {
+  type    = bool
+  default = true
 }
 
 locals {
