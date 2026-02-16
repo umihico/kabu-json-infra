@@ -161,12 +161,14 @@ output "cloudfront_url" {
 }
 
 variable "rdp_password" { type = string } # TF_VAR_rdp_password
+variable "availability_zone" { type = string }
 variable "instance_names" {
   type    = string
   default = ""
 }
 module "kabustation" {
-  source         = "./kabustation"
-  rdp_password   = var.rdp_password
-  instance_names = var.instance_names
+  source            = "./kabustation"
+  rdp_password      = var.rdp_password
+  instance_names    = var.instance_names
+  availability_zone = var.availability_zone
 }

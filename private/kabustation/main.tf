@@ -49,7 +49,7 @@ Set-NetFirewallRule -Name 'OpenSSH-Server-In-TCP' -Enabled 'True' -Profile Any
 
 variable "instance_names" { type = string }
 variable "rdp_password" { type = string } # TF_VAR_rdp_password
-
+variable "availability_zone" { type = string }
 
 resource "aws_iam_role" "this" {
   name = "kabu-json-windows-role"
@@ -111,6 +111,7 @@ resource "aws_instance" "this" {
   # user_data = base64encode(local.user_data) # Golden Imageからではなく０から作り直したい時
   # ゴールデンイメージを使うとき
   ami                         = data.aws_ami.myami_windows_kabu_station.id
+  availability_zone           = var.availability_zone
   vpc_security_group_ids      = [aws_security_group.windows.id]
   instance_type               = "c7a.large" # USD0.056/h 2vCPU 4GiB EBSのみ 最大5ギガビット
   iam_instance_profile        = aws_iam_instance_profile.this.name
