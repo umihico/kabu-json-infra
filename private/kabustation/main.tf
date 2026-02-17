@@ -120,6 +120,9 @@ resource "aws_instance" "this" {
   tags = {
     Name = "kabu-json-windows"
   }
+  # root_block_device設定はコメントアウト = AMIのデフォルト値を使用
+  # 現在のAMI (kabu-json-windows) には60GBが焼き込まれている
+  # 容量変更が必要な場合はEXPAND_EBS.mdを参照
   # root_block_device {
   # volume_size = 32
   # Windowsディレクトリ: 約21.8 GB
