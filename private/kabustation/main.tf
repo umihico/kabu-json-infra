@@ -60,8 +60,14 @@ resource "aws_security_group" "linux" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_from_linux_to_windows" {
-  security_group_id            = aws_security_group.windows.id
-  referenced_security_group_id = aws_security_group.linux.id
-  ip_protocol                  = -1
+resource "aws_vpc_security_group_ingress_rule" "allow_vpc_to_windows" {
+  security_group_id = aws_security_group.windows.id
+  cidr_ipv4         = data.aws_vpc.this.cidr_block
+  ip_protocol       = -1
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_vpc_to_linux" {
+  security_group_id = aws_security_group.linux.id
+  cidr_ipv4         = data.aws_vpc.this.cidr_block
+  ip_protocol       = -1
 }
