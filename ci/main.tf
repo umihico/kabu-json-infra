@@ -83,6 +83,12 @@ resource "aws_iam_policy" "github_actions" {
       Effect   = "Allow"
       Action   = "s3:GetObject"
       Resource = "${data.aws_s3_bucket.private_bucket.arn}/*"
+      }, {
+      # datetime_store (SSM Parameter Store) start/end 記録用
+      # 詳細: kabu/prerequisites/datetime_store.py
+      Effect   = "Allow"
+      Action   = "ssm:PutParameter"
+      Resource = "arn:aws:ssm:ap-northeast-1:${data.aws_caller_identity.current.account_id}:parameter/datetime_store/*"
     }]
   })
 }
