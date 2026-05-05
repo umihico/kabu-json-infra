@@ -15,20 +15,11 @@ provider "aws" {
 
 data "aws_caller_identity" "current" {}
 
-data "aws_iam_openid_connect_provider" "github_actions" {
-  arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com"
+resource "aws_iam_openid_connect_provider" "github_actions" {
+  url             = "https://token.actions.githubusercontent.com"
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = ["6938fd4d98bab03faadb97b34396831e3780aea1", "1c58a3a8518e8759bf075b76b750d4f2df264fcd"]
 }
-
-// 定義済をimportするパターン
-# import {
-#   to = aws_iam_openid_connect_provider.github_actions
-#   id = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com"
-# }
-# resource "aws_iam_openid_connect_provider" "github_actions" {
-#   url             = "https://token.actions.githubusercontent.com"
-#   client_id_list  = ["sts.amazonaws.com"]
-#   thumbprint_list = ["6938fd4d98bab03faadb97b34396831e3780aea1", "1c58a3a8518e8759bf075b76b750d4f2df264fcd", ]
-# }
 
 resource "aws_iam_role" "github_actions" {
   name = "kabu-json-github-actions-role"
@@ -39,7 +30,7 @@ resource "aws_iam_role" "github_actions" {
       Effect = "Allow"
       Action = "sts:AssumeRoleWithWebIdentity"
       Principal = {
-        Federated = data.aws_iam_openid_connect_provider.github_actions.arn
+        Federated = aws_iam_openid_connect_provider.github_actions.arn
       }
       Condition = {
         StringLike = {
@@ -53,12 +44,8 @@ resource "aws_iam_role" "github_actions" {
   })
 }
 
-data "aws_s3_bucket" "public_bucket" {
-  bucket = "kabu-json-public-static-data-bucket"
-}
-
 data "aws_s3_bucket" "private_bucket" {
-  bucket = "kabu-json-private-static-data-bucket"
+  bucket = "kabu-data-bucket"
 }
 
 resource "aws_iam_policy" "github_actions" {
@@ -70,15 +57,7 @@ resource "aws_iam_policy" "github_actions" {
     Statement = [{
       Effect   = "Allow"
       Action   = "s3:PutObject"
-      Resource = "${data.aws_s3_bucket.public_bucket.arn}/*"
-      }, {
-      Effect   = "Allow"
-      Action   = "s3:PutObject"
       Resource = "${data.aws_s3_bucket.private_bucket.arn}/*"
-      }, {
-      Effect   = "Allow"
-      Action   = "s3:GetObject"
-      Resource = "${data.aws_s3_bucket.public_bucket.arn}/*"
       }, {
       Effect   = "Allow"
       Action   = "s3:GetObject"
