@@ -14,7 +14,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "private_bucket" {
-  bucket = "kabu-json-private-static-data-bucket"
+  bucket = "kabu-data-bucket"
 }
 
 resource "aws_s3_bucket_public_access_block" "public_access_block" {
