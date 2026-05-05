@@ -21,6 +21,9 @@ resource "aws_iam_openid_connect_provider" "github_actions" {
   thumbprint_list = ["6938fd4d98bab03faadb97b34396831e3780aea1", "1c58a3a8518e8759bf075b76b750d4f2df264fcd"]
 }
 
+# 【最小権限ロール】パブリックリポジトリ（kabu-json-infra等）のGitHub Actionsが使う。
+# AdministratorAccessは付与しない。S3/SSMのみ。
+# terraform apply/destroy は不可 → それは kabu-json-worker/worker/main.tf の secret-worker-role が担う。
 resource "aws_iam_role" "github_actions" {
   name = "kabu-json-github-actions-role"
   assume_role_policy = jsonencode({
