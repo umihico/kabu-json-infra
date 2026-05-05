@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket         = "kabu-json-terraform-states"
+    bucket         = "kabu-terraform-states"
     key            = "public/terraform.tfstate"
-    dynamodb_table = "kabu-json-terraform-states-locker"
+    dynamodb_table = "kabu-terraform-states-locker"
     region         = "ap-northeast-1"
   }
 }

@@ -13,11 +13,11 @@ provider "aws" {
 // gitに含めれないローカルのterraform.tfstateをロストしても良いように
 import {
   to = aws_s3_bucket.terraform_state_bucket
-  id = "kabu-json-terraform-states"
+  id = "kabu-terraform-states"
 }
 
 resource "aws_s3_bucket" "terraform_state_bucket" {
-  bucket = "kabu-json-terraform-states"
+  bucket = "kabu-terraform-states"
 
   tags = {
     Name = "Terraform State Bucket"
@@ -27,7 +27,7 @@ resource "aws_s3_bucket" "terraform_state_bucket" {
 // gitに含めれないローカルのterraform.tfstateをロストしても良いように
 import {
   to = aws_s3_bucket_public_access_block.terraform_state_bucket_public_access_block
-  id = "kabu-json-terraform-states"
+  id = "kabu-terraform-states"
 }
 
 resource "aws_s3_bucket_public_access_block" "terraform_state_bucket_public_access_block" {
@@ -42,11 +42,11 @@ resource "aws_s3_bucket_public_access_block" "terraform_state_bucket_public_acce
 // gitに含めれないローカルのterraform.tfstateをロストしても良いように
 import {
   to = aws_dynamodb_table.terraform_locker_table
-  id = "kabu-json-terraform-states-locker"
+  id = "kabu-terraform-states-locker"
 }
 
 resource "aws_dynamodb_table" "terraform_locker_table" {
-  name         = "kabu-json-terraform-states-locker"
+  name         = "kabu-terraform-states-locker"
   hash_key     = "LockID"
   billing_mode = "PROVISIONED"
 
@@ -60,6 +60,6 @@ resource "aws_dynamodb_table" "terraform_locker_table" {
   write_capacity = 1
 
   tags = {
-    Name = "kabu-json-terraform-states-locker"
+    Name = "kabu-terraform-states-locker"
   }
 }
